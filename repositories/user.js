@@ -36,7 +36,7 @@ const login = async ({email,password}) => {
     
 }
 const register = async ({
-    email, password, name, gender, badges, friends, dateOfBirth, healthActivity, idChallenges
+    email, password, name
     }) => { 
     try {
         debugger
@@ -47,7 +47,7 @@ const register = async ({
         // encrypt password with salt rounds
         const hashedPassword = await bcrypt.hash(password,parseInt(process.env.SALT_ROUNDS))
         const newUser = await User.create({
-            name, email, password: hashedPassword, gender, badges, friends, dateOfBirth, healthActivity, idChallenges
+            name, email, password: hashedPassword
         })
         return {...newUser._doc,password: 'Not show'}
     } catch (error) {
