@@ -17,6 +17,21 @@ const getAllChallengesByUser = async ({idUser}) => {
     
     return filteredChallenge
 }
+const getPublicChallenge = async () => {
+    let filteredChallenge = await Challenge.aggregate([
+        {
+            $match : {
+                $or : [
+                    {
+                        "access" : {$regex : `.*${"Public"}.*`, $options : "i"}
+                    }
+                ]
+            }
+        },    
+    ])
+    
+    return filteredChallenge
+}
 
 const getChallengeById = async ({id}) => {
     let challenge = await Challenge.findById(id)
@@ -68,6 +83,7 @@ export default {
     getAllChallengesByUser,
     getChallengeById,
     createChallenge,
+    getPublicChallenge,
     updateChallenge,
     deleteChallenge
 }
