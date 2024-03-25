@@ -24,5 +24,6 @@ router.get('/:id', userController.getDetailUser );
 
 router.post('/upload',upload.single('imageData'), userController.uploadProfilePicture );
 
+router.post('/friends/add ', userController.addFriend);
 
 export default router;

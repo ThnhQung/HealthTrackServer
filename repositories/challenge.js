@@ -46,10 +46,10 @@ const getChallengeById = async ({id}) => {
     } 
 }
 
-const createChallenge = async ({name, dateStart, target, listMember, userRecords, access}) => {
+const createChallenge = async ({name, dateStart,dateEnd,description, target, listMember, userRecords, access,exp}) => {
     try {
         debugger
-        const challenge = await Challenge.create({name, dateStart, target, listMember, userRecords,access})
+        const challenge = await Challenge.create({name, dateStart,dateEnd,description, target, listMember, userRecords, access,exp})
         return challenge
     } catch (error) {
         debugger
@@ -57,6 +57,7 @@ const createChallenge = async ({name, dateStart, target, listMember, userRecords
     }
     
 }
+
 
 const deleteChallenge = async({id}) => {
     try {
