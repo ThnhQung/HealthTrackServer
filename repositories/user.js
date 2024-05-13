@@ -85,42 +85,36 @@ const joinChallenge = async ({userId, userName,idChallenge}) => {
 
 const leaveChallenge = async ({userId,idChallenge}) => { 
     try {
-        const user = await User.findById(userId);
-        if (!user) {
-            throw new Error('Người dùng không tồn tại');
+        const user = await User.findById(userId)
+        const index = user.idChallenges.indexOf(idChallenge)
+        if (index > -1) {
+            user.idChallenges.splice(index, 1)
         }
-        // Xóa idChallenge khỏi mảng idChallenges
-        const index = user.idChallenges.indexOf(idChallenge);
-        if (index !== -1) {
-            user.idChallenges.splice(index, 1);
-        }
-        await user.save();
+        await user.save()
 
-        // Tìm và cập nhật thách thức
-        const challenge = await Challenge.findById(idChallenge);
-        if (!challenge) {
-            throw new Error('Thách thức không tồn tại');
+        const challenge = await Challenge.findById(idChallenge)
+        const memberIndex = challenge.listMember.findIndex(member => member.userId === userId)
+        if (memberIndex > -1) {
+            challenge.listMember.splice(memberIndex, 1)
         }
-        // Lọc ra listMember để loại bỏ người dùng khỏi đó
-        challenge.listMember = challenge.listMember.filter(member => member.userId !== userId);
-        await challenge.save();
-
-    return challenge
-        
+        const recordIndex = challenge.userRecords.findIndex(member => member.userId === userId)
+        if (recordIndex > -1) {
+            challenge.userRecords.splice(recordIndex, 1)
+        }
+        await challenge.save()
     } catch (error) {
         // check model validation   
         debugger
-        throw new Exception("Can not join challenge")
-        
+        throw new Exception("Can not leave challenge")
     }
 
     
 }
 
-const updateUser = async ({id, password, name, gender, badges, friends, dateOfBirth, healthActivity, idChallenges,level,exp}) => {
-    const user = await User.findById(id)
+const updateUser = async ({_id, email, profilePicture,password, name, gender, badges, friends, dateOfBirth, healthActivity, idChallenges, level, exp, friendList,friendMyRequest,friendRequest }) => {
+    const user = await User.findById(_id)
     user.name = name ?? user.name
-    user.password = password ?? user.password
+    user.profilePicture = profilePicture ?? user.profilePicture
     user.gender = gender ?? user.gender
     user.badges = badges ?? user.badges
     user.friends = friends ?? user.friends
@@ -129,10 +123,23 @@ const updateUser = async ({id, password, name, gender, badges, friends, dateOfBi
     user.idChallenges = idChallenges ?? user.idChallenges
     user.level = level ?? user.level
     user.exp = exp ?? user.exp
+    user.friendList = friendList ?? user.friendList
+    user.friendMyRequest = friendMyRequest ?? user.friendMyRequest
+    user.friendRequest = friendRequest ?? user.friendRequest
 
     await user.save()
     return user
 }
+
+const getDetailUser = async (userId) => {
+    try {
+        debugger
+        const user = await User.findById(userId);
+        return user;
+    } catch (error) {
+        throw new Exception("Failed to get detail user");
+    }
+};
 const addFriend = async ({userId, friendId}) => {
     const user = await User.findById(userId)
     const friend = await User.findById(friendId)
@@ -160,6 +167,103 @@ const uploadProfilePicture = async ({ userId, imageData, contentType }) => {
     }
 };
 
+const getFriends = async ({ userId}) => {
+    try {
+        debugger
+        const user = await User.findById(userId);
+        const users = await User.find({ _id: { $in: user.friendList } });
+        return users;
+    } catch (error) {
+        debugger
+        throw new Exception("Failed to upload profile picture");
+    }
+};
+
+const getFriendRequest = async ({ userId}) => {
+    try {
+        debugger
+        const user = await User.findById(userId);
+        const users = await User.find({ _id: { $in: user.friendRequest } });
+        return users;
+    } catch (error) {
+        debugger
+        throw new Exception("Failed to upload profile picture");
+    }
+};
+
+const getMyFriendRequest = async ({ userId}) => {
+    try {
+        debugger
+        const user = await User.findById(userId);
+        const users = await User.find({ _id: { $in: user.friendMyRequest } });
+        return users;
+    } catch (error) {
+        debugger
+        throw new Exception("Failed to upload profile picture");
+    }
+};
+
+const acceptFriendRequest = async ({ userId, friendId }) => {
+    try {
+        const user = await User.findById(userId);
+        const friend = await User.findById(friendId);
+        if (!friend || !user) {
+            throw new Exception("User does not exist");
+        }
+
+        // Add friend to user's friend list
+        user.friendList.push(friendId);
+        // Remove friend request from user's friendRequest list
+        const requestIndex = user.friendRequest.indexOf(friendId);
+        if (requestIndex > -1) {
+            user.friendRequest.splice(requestIndex, 1);
+        }
+
+        // Add user to friend's friend list
+        friend.friendList.push(userId);
+        // Remove user from friend's friendMyRequest list
+        const myRequestIndex = friend.friendMyRequest.indexOf(userId);
+        if (myRequestIndex > -1) {
+            friend.friendMyRequest.splice(myRequestIndex, 1);
+        }
+
+        await user.save();
+        await friend.save();
+        return user;
+    } catch (error) {
+        throw new Exception("Failed to accept friend request");
+    }
+};
+
+const declineFriendRequest = async ({ userId, friendId }) => {
+    try {
+        const user = await User.findById(userId);
+        const friend = await User.findById(friendId);
+        if (!friend || !user) {
+            throw new Exception("User does not exist");
+        }
+
+        // Remove friend request from user's friendRequest list
+        const requestIndex = user.friendRequest.indexOf(friendId);
+        if (requestIndex > -1) {
+            user.friendRequest.splice(requestIndex, 1);
+        }
+
+        // Remove user from friend's friendMyRequest list
+        const myRequestIndex = friend.friendMyRequest.indexOf(userId);
+        if (myRequestIndex > -1) {
+            friend.friendMyRequest.splice(myRequestIndex, 1);
+        }
+
+        await user.save();
+        await friend.save();
+        return user;
+    } catch (error) {
+        throw new Exception("Failed to decline friend request");
+    }
+};
+
+
 export default {
     login,
     register,
@@ -167,5 +271,11 @@ export default {
     leaveChallenge,
     updateUser,
     uploadProfilePicture,
-    addFriend
+    addFriend,
+    getFriendRequest,
+    getMyFriendRequest,
+    getFriends,
+    acceptFriendRequest,
+    declineFriendRequest,
+    getDetailUser
 }

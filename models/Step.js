@@ -5,7 +5,8 @@ const stepSchema = new Schema({
     calo: { type: Number },
     distance: { type: Number },
     time: { type: String },
-    date: { type: String, default: new Date().toISOString().split('T')[0] },
+    date: {type: String},
+    // date: { type: String, default: new Date().toISOString().split('T')[0] },
 });
 
 const Step = model('Step', stepSchema);

@@ -24,9 +24,8 @@ const User = mongoose.model("User", new Schema({
 
     profilePicture: {
         type: String,
-        data: Buffer, // Dữ liệu hình ảnh
-        contentType: String ,// Loại dữ liệu của hình ảnh
         required: false,
+        default: null
     },
     password : { 
         type : String,

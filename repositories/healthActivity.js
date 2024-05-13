@@ -29,7 +29,7 @@ const getDataHealth = async (idUser, date) => {
     let filteredHealthActivity = await HealthActivity.aggregate([
         {
             $match: {
-                $or: [
+                $and: [
                     {
                         idUser: { $regex: `.*${idUser}.*`, $options: "i" }
                     },

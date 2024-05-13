@@ -1,4 +1,11 @@
 import { Step } from "../models/index.js";
+import {Challenge, User} from '../models/index.js'
+import {EventEmitter} from 'node:events'
+const myEvent = new EventEmitter()
+myEvent.on('event.update.step', (params) => {
+ console.log('They talk about param :'+ JSON.stringify(params))
+})
+
 
 // const insertStep = async({
 //     idUser,
@@ -17,7 +24,7 @@ import { Step } from "../models/index.js";
 //     return step;
 // }
 
-const insertStep = async ({ idUser, numberStep, weight }) => {
+const insertStep = async ({ idUser, numberStep, weight, date }) => {
 
     //Đối với nam: Chiều dài bước chân (cm) = 0,67 * Chiều cao (cm)
     //Đối với nữ: Chiều dài bước chân (cm) = 0,63 * Chiều cao (cm)
@@ -37,6 +44,7 @@ const insertStep = async ({ idUser, numberStep, weight }) => {
         distance,
         time,
         calo,
+        date,
     });
     return step;
 };
@@ -100,6 +108,7 @@ const updateStep = async ({ idUser, date, newData }) => {
         //calo = METs * cân nặng(kg) * thời gian vận động(h) * 1.05
         const calo = Math.ceil(4 * newData.weight * time / 60 * 1.05);
 
+    
         const updatedStep = await Step.findOneAndUpdate(
             { idUser, date },
             {
@@ -114,6 +123,10 @@ const updateStep = async ({ idUser, date, newData }) => {
             },
             { new: true }
         );
+
+        
+       
+
 
         return updatedStep;
     } catch (error) {

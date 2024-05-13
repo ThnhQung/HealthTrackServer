@@ -21,22 +21,20 @@ const heartRateSchema = new Schema({
 
 // BodyComposition Schema
 const bodyCompositionSchema = new Schema({
-    rate: { type: Number },
+    height: { type: Number },
+    weight: { type: Number },
 });
 
 const bloodPressureSchema = new Schema({
-    rate: { type: Number },
+    sys: { type: Number },
+    dia: { type: Number },
 });
 
-const amountWaterTime = new Schema({
-    drinkingTime: { type: String},
+const amountWater = new Schema({
     amountDrinking: {type: Number},
 })
 
-const waterInTake = new Schema({
-    totalAmountWater: { type: Number},
-    listAmountWater: [amountWaterTime],
-})
+
 
 // HealthActivity Schema
 const healthActivitySchema = new Schema({
@@ -48,7 +46,7 @@ const healthActivitySchema = new Schema({
     bloodPressure: { type: bloodPressureSchema },
     heartRate: { type: heartRateSchema },
     bodyComposition: { type: bodyCompositionSchema },
-    waterInTake: { type: waterInTake},
+    amountWater: { type: amountWater},
 });
 
 // const Step = model('Step', stepSchema);
