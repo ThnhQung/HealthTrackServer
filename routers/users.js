@@ -1,6 +1,6 @@
 import express from 'express';
 import { body, validationResult } from 'express-validator';
-import {upload} from '../middleware/multer.js';
+// import {upload} from '../middleware/multer.js';
 import {
     userController
 } from '../controllers/index.js'
@@ -31,7 +31,7 @@ router.get('/friends/myRequest/:id', userController.getMyFriendRequest );
 
 router.get('/:id', userController.getDetailUser );
 
-router.post('/upload',upload.single('imageData'), userController.uploadProfilePicture );
+// router.post('/upload',upload.single('imageData'), userController.uploadProfilePicture );
 
 router.post('/friends/add', userController.addFriend);
 
