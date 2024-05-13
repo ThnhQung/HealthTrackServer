@@ -18,4 +18,7 @@ router.post('/delete/:id', challengeController.deleteChallenge );
 
 router.patch('/', challengeController.updateChallenge );
 
+
+router.patch('/:id/:step', challengeController.updateStep );
+
 export default router;

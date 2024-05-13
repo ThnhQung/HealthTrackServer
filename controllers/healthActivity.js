@@ -54,46 +54,11 @@ async function updateHealthActivityController(req, res) {
     }
 }
 
-async function addAmountWaterTime(req, res) {
-    try {
-        const { idUser, date } = req.params;
-        const amountWaterTime = req.body;
 
-        const result = await HealthActivityRepository.addAmountWaterTime(idUser, date, amountWaterTime);
-
-        res.status(200).json({
-            message: 'Add AmountWaterTime successfully',
-            data: result,
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            message: error.message,
-        });
-    }
-}
-
-const deleteAmountWaterTime = async (req, res) => {
-    const { idUser, date, amountWaterTimeId } = req.params;
-  
-    try {
-      const updatedHealthActivity = await HealthActivityRepository.deleteAmountWaterTime(idUser, date, amountWaterTimeId);
-  
-      res.status(HttpStatusCode.OK).json({
-        message: 'Update health activity successfully',
-        data: updatedHealthActivity,
-    });
-    } catch (error) {
-        res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
-            message: error.message,
-        });
-    }
-  };
 
 export default {
     insertHealthActivity,
     getDataHealth,
-    updateHealthActivityController,
-    addAmountWaterTime,
-    deleteAmountWaterTime
+    updateHealthActivityController
+
 }

@@ -88,6 +88,18 @@ async function updateChallenge(req, res) {
         });
         
     }}
+async function updateStep(req, res) {
+        try {
+            let {id,step} = req.params
+            const challenge = await challengeRepository.updateStep({id,step})
+            res.status(HttpStatusCode.INSERT_OK).json(
+                {message : "Update challenge successfully", data : challenge});
+        } catch (error) {
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+                message : "Can not update challenge : " +  error.message, 
+            });
+            
+}}
 export default {
     getAllChallengesByUser,
     getChallengeById,
@@ -95,4 +107,5 @@ export default {
     createChallenge,
     deleteChallenge,
     updateChallenge,
+    updateStep
 }

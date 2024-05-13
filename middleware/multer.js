@@ -3,7 +3,7 @@ import { GridFsStorage } from "multer-gridfs-storage";
 
 import dotenv from "dotenv";
 dotenv.config()
-const url = "mongodb+srv://Quang:tSoLllxQLhpA6GAD@cluster0.fbejs7v.mongodb.net/HealthTrack?retryWrites=true&w=majority"
+const url = process.env.MONGO_URI
 
 // Create a storage object with a given configuration
 const storage = new GridFsStorage({
